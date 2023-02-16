@@ -5,41 +5,34 @@ import java.io.InputStreamReader;
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-        String s = br.readLine();
-
-        int[] alpha = new int[26];
-
-        for (char ch : s.toCharArray()) {
-            alpha[ch - 'A']++;
+        String hanSoo = br.readLine();
+        int[] alphabet = new int[26];
+        for (char c : hanSoo.toCharArray()) {
+            alphabet[c - 'A']++;
         }
-
-        int n = 0, mid = 0;
+        int odd = 0;
+        int center = -1;
         for (int i = 0; i < 26; i++) {
-            if (alpha[i] % 2 == 1) {
-                mid = i;
-                n++;
+            if (alphabet[i] % 2 == 1) {
+                odd++;
+                center = i;
             }
         }
-
         StringBuilder sb = new StringBuilder();
-        if ((s.length() % 2 == 1 && n > 1) || (s.length() % 2 == 0 && n > 0)) {
+        if (odd > 1) {
             sb.append("I'm Sorry Hansoo");
         } else {
-            String answer = "";
             for (int i = 0; i < 26; i++) {
-                for (int j = 0; j < alpha[i] / 2; j++) {
-                    answer += (char) (i + 'A');
+                for (int j = 0; j < alphabet[i] / 2; j++) {
+                    sb.append((char) (i + 'A'));
                 }
             }
-
-            String rev = new StringBuilder(answer).reverse().toString();
-            if (n == 1) {
-                answer += (char) (mid + 'A');
+            String rev = new StringBuilder(sb).reverse().toString();
+            if (center != -1) {
+                sb.append((char) ('A' + center));
             }
-
-            sb.append(answer + rev);
+            sb.append(rev);
         }
-        System.out.print(sb);
+        System.out.println(sb);
     }
 }
