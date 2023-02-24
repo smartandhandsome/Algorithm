@@ -1,0 +1,18 @@
+SELECT A.YEAR, A.MONTH,
+        COUNT(*) PUCHASED_USERS,
+        ROUND(COUNT(USER_ID) /
+        (
+            SELECT COUNT(*)
+            FROM USER_INFO
+            WHERE YEAR(joined) = "2021"
+        ), 1) PUCHASED_RATIO
+FROM (
+    SELECT DISTINCT
+        YEAR(S.SALES_DATE) YEAR,
+        MONTH(S.SALES_DATE) MONTH,
+        S.USER_ID
+    FROM USER_INFO U JOIN ONLINE_SALE S
+    ON U.USER_ID = S.USER_ID and YEAR(U.JOINED) = "2021"
+    ) A
+GROUP BY 1, 2
+ORDER BY 1, 2
