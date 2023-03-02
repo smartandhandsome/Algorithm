@@ -36,7 +36,6 @@ def spin(block):
     for b in block:
         y, x = b
         spined.append((x, -y))
-
     return reset_point(spined)
 
 
