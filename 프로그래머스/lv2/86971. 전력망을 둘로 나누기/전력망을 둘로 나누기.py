@@ -1,35 +1,42 @@
-def bfs(graph, start_node):
-    visited = list()
-    need_visit = list()
+import copy
+from collections import deque
 
-    need_visit.append(start_node)
-
-    while need_visit:
-        node = need_visit.pop(0)
-        if node not in visited:
-            visited.append(node)
-            need_visit.extend(graph[node])
-
-    return len(visited)
-
+def get_size(graph, target, n):
+    visited = [False] * (n+1)
+    visited[target] = True
+    queue = deque([target])
+    while queue:
+        x = queue.popleft()
+        for g in graph[x]:
+            if not visited[g]:
+                visited[g] = True
+                queue.append(g)
+    return visited.count(True)
+        
 
 def solution(n, wires):
-    graph = [[] for _ in range(n + 1)]
-    for a, b in wires:
+    # hint! 차수가 가장 높은 것
+    answer = n
+    degree = [0] * (n+1)
+    graph = {}
+    for wire in wires:
+        a, b = wire
+        if not graph.get(a, False):
+            graph[a] = []
+        if not graph.get(b, False):
+            graph[b] = []
         graph[a].append(b)
+        degree[a] += 1
         graph[b].append(a)
-    MIN = 999999999999
-    for a, b in wires:
-        graph[a].remove(b)
-        graph[b].remove(a)
-        a_cnt = bfs(graph, a)
-        b_cnt = bfs(graph, b)
-        MIN = min(MIN, abs(a_cnt - b_cnt))
-        graph[a].append(b)
-        graph[b].append(a)
-    return MIN
+        degree[b] += 1
+        
+    for wire in wires:
+        vertex1, vertex2 = wire
+        temp_graph = copy.deepcopy(graph)
+        temp_graph[vertex1].remove(vertex2)
+        temp_graph[vertex2].remove(vertex1)
+        size1 = get_size(temp_graph, vertex1, n)
+        size2 = get_size(temp_graph, vertex2, n)
+        answer = min(abs(size1- size2), answer)
+    return answer
 
-
-print(solution(9, [[1, 3], [2, 3], [3, 4], [4, 5], [4, 6], [4, 7], [7, 8], [7, 9]]))
-print(solution(4, [[1, 2], [2, 3], [3, 4]]))
-print(solution(7, [[1, 2], [2, 7], [3, 7], [3, 4], [4, 5], [6, 7]]))
