@@ -1,10 +1,9 @@
-set @time = -1;
-
-select @time := @time +1 "HOUR",
-(
-    select COUNT(HOUR(DATETIME))
+set @hour=-1;
+select @hour := @hour + 1 hour, ifnull((
+    select count(*)
     from ANIMAL_OUTS
-    where @time = HOUR(DATETIME)
-) COUNT
+    where HOUR(DATETIME) = @hour
+    group by HOUR(DATETIME)
+), 0) COUNT
 from ANIMAL_OUTS
-where @time < 23
+where @hour < 23
