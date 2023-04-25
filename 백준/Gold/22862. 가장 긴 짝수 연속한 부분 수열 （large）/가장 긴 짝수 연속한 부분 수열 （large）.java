@@ -18,7 +18,8 @@ public class Main {
         int end = 0;
         int answer = 0;
         int cnt = 0;
-        while (start < N && end < N) {
+        
+        while (end < N) {
             if (cnt > K) {
                 if (S[start] % 2 == 1) {
                     cnt--;
@@ -33,6 +34,7 @@ public class Main {
                     answer = Math.max(answer, end - start - K);
                 }
             }
+            
             end++;
         }
         
