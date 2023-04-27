@@ -1,12 +1,6 @@
-SET @total = (SELECT COUNT(USER_ID) FROM USER_INFO WHERE YEAR(JOINED) = 2021);
-SELECT 
-    YEAR(sales_date) YEAR,
-    MONTH(sales_date) MONTH,
-    COUNT(DISTINCT O.USER_ID) PUCHASED_USERS,
-    ROUND(COUNT(DISTINCT O.USER_ID) / @total, 1) PUCHASED_RATIO
-FROM ONLINE_SALE O
-WHERE O.USER_ID IN (
-    SELECT USER_ID FROM USER_INFO WHERE YEAR(JOINED) = 2021
-)
-GROUP BY YEAR(sales_date), MONTH(sales_date)
-ORDER BY YEAR, MONTH
+set @count = (select count(*) from user_info where year(joined) = "2021");
+
+select YEAR(SALES_DATE) YEAR, MONTH(SALES_DATE) MONTH,  count(distinct user_id) PUCHASED_USERS, round(count(distinct user_id) / @count, 1) PUCHASED_RATIO
+from ONLINE_SALE
+where user_id in (select user_id from user_info where year(joined) = "2021")
+group by 1, 2
