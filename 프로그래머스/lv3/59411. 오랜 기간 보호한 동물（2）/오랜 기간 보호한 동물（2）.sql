@@ -1,5 +1,5 @@
-select ins.animal_id, ins.name
-from ANIMAL_INS ins 
-join ANIMAL_OUTS outs on ins.animal_id = outs.animal_id
-order by datediff(outs.DATETIME, ins.DATETIME) desc
-LIMIT 2;
+select ANIMAL_ID, I.NAME
+from ANIMAL_INS I
+join ANIMAL_OUTS O using(animal_id)
+order by datediff(O.DATETIME, I.DATETIME) desc
+limit 2;
