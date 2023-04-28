@@ -1,15 +1,18 @@
-select history_id, truncate((datediff(end_date, start_date)+1) * car.daily_fee * 
- case
-    when datediff(end_date, start_date) >= 90
-    then (select 100- discount_rate from CAR_RENTAL_COMPANY_DISCOUNT_PLAN where DURATION_TYPE = "90일 이상" and CAR_TYPE = "트럭")
-    when datediff(end_date, start_date) >= 30
-    then (select 100 - discount_rate from CAR_RENTAL_COMPANY_DISCOUNT_PLAN where DURATION_TYPE = "30일 이상" and CAR_TYPE = "트럭")
-    when datediff(end_date, start_date) >= 7
-    then (select 100 - discount_rate from CAR_RENTAL_COMPANY_DISCOUNT_PLAN where DURATION_TYPE = "7일 이상" and CAR_TYPE = "트럭")
-    else 100
-end / 100, 0) fee
-from CAR_RENTAL_COMPANY_CAR car
-join CAR_RENTAL_COMPANY_RENTAL_HISTORY his on car.CAR_ID = his.CAR_ID
-where car.car_type = "트럭"
-order by 2 desc, 1 desc
+set @nine = (select DISCOUNT_RATE from CAR_RENTAL_COMPANY_DISCOUNT_PLAN where DURATION_TYPE like "90%" and CAR_TYPE = "트럭");
+set @three = (select DISCOUNT_RATE from CAR_RENTAL_COMPANY_DISCOUNT_PLAN where DURATION_TYPE like "30%" and CAR_TYPE = "트럭");
+set @seven = (select DISCOUNT_RATE from CAR_RENTAL_COMPANY_DISCOUNT_PLAN where DURATION_TYPE like "7%" and CAR_TYPE = "트럭");
 
+select history_id, 
+    CASE
+    WHEN DATEDIFF(END_DATE, START_DATE) >= 90
+    THEN TRUNCATE(DAILY_FEE * (DATEDIFF(END_DATE, START_DATE) + 1) * (100 - @nine) / 100, 0)
+    WHEN DATEDIFF(END_DATE, START_DATE) >= 30
+    THEN TRUNCATE(DAILY_FEE * (DATEDIFF(END_DATE, START_DATE) + 1) * (100 - @three) / 100, 0)
+    WHEN DATEDIFF(END_DATE, START_DATE) >= 7
+    THEN TRUNCATE(DAILY_FEE * (DATEDIFF(END_DATE, START_DATE) + 1) * (100 - @seven) / 100, 0)
+    ELSE TRUNCATE(DAILY_FEE * (DATEDIFF(END_DATE, START_DATE) + 1), 0)
+    END FEE
+from CAR_RENTAL_COMPANY_RENTAL_HISTORY
+join CAR_RENTAL_COMPANY_CAR using(CAR_ID)
+where CAR_TYPE = "트럭"
+order by 2 desc, 1 desc
