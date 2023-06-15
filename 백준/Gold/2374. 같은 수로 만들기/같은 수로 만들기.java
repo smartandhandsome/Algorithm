@@ -17,18 +17,16 @@ public class Main {
         }
 
         long answer = 0;
-        Stack<Integer> stack = new Stack<>();
-        stack.add(A[0]);
+        int target = A[0];
         for (int i = 1; i < N; i++) {
-            if (A[i] > stack.peek()) {
-                answer += (A[i] - stack.pop());
-                stack.push(A[i]);
-            } else if (A[i] < stack.peek()) {
-                stack.pop();
-                stack.push(A[i]);
+            if (A[i] > target) {
+                answer += (A[i] - target);
+                target = A[i];
+            } else if (A[i] < target) {
+                target = A[i];
             }
         }
-        answer += max - stack.pop();
+        answer += max - target;
         System.out.println(answer);
     }
 }
