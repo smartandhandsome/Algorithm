@@ -29,29 +29,32 @@ public class Main {
 
         if (sum[N - 1] % 4 != 0) {
             System.out.println(0);
-        } else if (sum[N - 1] == 0) {  // 누적합이 0일때 N-1 을 제외하고 zero 개수 세서 zeroC3(조합)
-            int zero = 0;
-            for (int i = 0; i < N - 1; i++) {
-                if (nums[i] == 0) {
-                    zero += 1;
-                }
-            }
-            count = (long) zero * (zero - 1) * (zero - 2) / (3 * 2); // zero C 3
-            System.out.println(count);
         } else {
-            long[] dp = {1, 0, 0, 0, 0}; // 0, 1구간 2구간 3구간 4구간
-            long part = sum[N - 1] / 4;
-            for (int i = 0; i < N; i++) {
-                if (sum[i] % part != 0) {
-                    continue;
+            if (sum[N - 1] == 0) {  // 누적합이 0일때 N-1 을 제외하고 zero 개수 세서 zeroC3(조합)
+                int zero = 0;
+                for (int i = 0; i < N - 1; i++) {
+                    if (sum[i] == 0) {
+                        zero += 1;
+                    }
                 }
-                int d = (int) (sum[i] / part);
-                if (d < 1 || d >= 4) {
-                    continue;
+                count = (long) zero * (zero - 1) * (zero - 2) / (3 * 2); // zero C 3
+                System.out.println(count);
+            } else {
+                long[] dp = {1, 0, 0, 0, 0}; // padding, 1구간 2구간 3구간 4구간
+                long part = sum[N - 1] / 4;
+                for (int i = 0; i < N - 1; i++) {
+                    if (sum[i] % part != 0) {
+                        continue;
+                    }
+                    int d = (int) (sum[i] / part);
+                    if (d < 1 || d >= 4) {
+                        continue;
+                    }
+                    dp[d] += dp[d - 1]; // 예를들어 현제 값이 9일 때 현재까지 나온 6을 더해줌
                 }
-                dp[d] += dp[d - 1];
+                dp[4] += dp[3];
+                System.out.println(dp[4]);
             }
-            System.out.println(dp[4]);
         }
     }
 }
