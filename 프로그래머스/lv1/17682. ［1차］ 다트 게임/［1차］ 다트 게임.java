@@ -1,43 +1,33 @@
 import java.util.*;
+import java.util.regex.*;
 
 class Solution {
-    static Map<Character, Integer> map = new HashMap<>(
-            Map.of('S', 1, 'D', 2, 'T', 3)
-    );
-
     public int solution(String dartResult) {
-        int answer = 0;
-        int index = 0;
-        int N = dartResult.length();
-
-        List<Integer> scores = new ArrayList<>();
-        while (index < N) {
-            int score = dartResult.charAt(index) - '0';
-            index++;
-            if (score == 1 && index < N && dartResult.charAt(index) == '0') {
-                score = 10;
-                index++;
+        int[] nums = new int[3];
+        Map<String, Integer> map = new HashMap<>(
+            Map.of(
+                    "S", 1,
+                    "D", 2,
+                    "T", 3
+            )
+        );
+        Matcher m = Pattern.compile("([0-9]+)([S|D|T])([#|*]?)").matcher(dartResult);
+        int idx = 0;
+        while (m.find()) {
+            int num = Integer.parseInt(m.group(1));
+            int pow = map.get(m.group(2));
+            nums[idx] = (int) Math.pow(num, pow);
+            if (m.group(3).equals("#")) {
+                nums[idx] *= -1;
             }
-            int pow = map.get(dartResult.charAt(index));
-            index++;
-            int cur = (int) Math.pow(score, pow);
-            if (index < N) {
-                if (dartResult.charAt(index) == '#') {
-                    cur *= -1;
-                    index++;
-                } else if (dartResult.charAt(index) == '*') {
-                    cur *= 2;
-                    if (scores.size() > 0) {
-                        scores.set(scores.size() - 1, scores.get(scores.size() - 1) * 2);
-                    }
-                    index++;
+            if (m.group(3).equals("*")) {
+                nums[idx] *= 2;
+                if (idx >= 1) {
+                    nums[idx - 1] *= 2;
                 }
             }
-            scores.add(cur);
+            idx++;
         }
-        for (Integer score : scores) {
-            answer += score;
-        }
-        return answer;
+        return nums[0] + nums[1] + nums[2];
     }
 }
