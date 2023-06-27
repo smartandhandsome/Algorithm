@@ -34,7 +34,7 @@ class Solution {
         }
         answers.add(answer);
 
-        return answers.stream().mapToInt(value -> (int) value).toArray(); 
+        return answers.stream().mapToInt(Integer::intValue).toArray(); 
     }
 }
 
