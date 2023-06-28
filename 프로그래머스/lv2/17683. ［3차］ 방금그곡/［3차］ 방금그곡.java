@@ -1,7 +1,4 @@
-import java.util.LinkedList;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 
 class Solution {
     public String solution(String m, String[] musicinfos) {
@@ -50,16 +47,6 @@ class Solution {
         String[] bSplit = b.split(":");
         int bTime = Integer.parseInt(bSplit[0]) * 60 + Integer.parseInt(bSplit[1]);
         return bTime - aTime;
-    }
-
-
-    public static void main(String[] args) {
-        System.out.println(new Solution().solution("ABC", new String[]{"12:00,12:06,HELLO,ABC#ABC#ABC"}));  // "(None)"
-        System.out.println(new Solution().solution("ABC", new String[]{"12:00,12:10,HELLO,ABC#ABC#ABC"})); // "HELLO"
-        System.out.println(new Solution().solution("ABC", new String[]{"12:04,13:00,HELLO,ABC#ABC#ABC"})); // "HELLO"
-        System.out.println(new Solution().solution("C#C", new String[]{"12:00,12:06,HELLO,C#C#CC#"})); // "HELLO"
-        System.out.println(new Solution().solution("CCB", new String[]{"03:00,03:10,FOO,CCB#CCB", "04:00,04:08,BAR,ABC"})); // "HELLO"
-
     }
 
     class Candidate {
