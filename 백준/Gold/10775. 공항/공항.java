@@ -1,43 +1,43 @@
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class Main {
-    static int[] gates;
 
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int N = sc.nextInt(), M = sc.nextInt();
-        gates = new int[N + 1];
-        for (int i = 0; i <= N; i++) {
-            gates[i] = i;
+    private static final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    private static int[] disjoint;
+
+    public static void main(String[] args) throws IOException {
+        int G = Integer.parseInt(br.readLine());
+        disjoint = new int[G + 1];
+        for (int i = 0; i <= G; i++) {
+            disjoint[i] = i;
+        }
+
+        int P = Integer.parseInt(br.readLine());
+        int[] plane = new int[P];
+        for (int i = 0; i < P; i++) {
+            plane[i] = Integer.parseInt(br.readLine());
         }
         int answer = 0;
-        for (int i = 0; i < M; i++) {
-            int g = sc.nextInt();
-            if (!union(g)) {
+        for (int i = 0; i < P; i++) {
+            int target = find(plane[i]);
+            if (target == 0) {
                 break;
             }
+            disjoint[target] = disjoint[target - 1];
             answer++;
         }
+
         System.out.println(answer);
-        sc.close();
     }
 
-    public static int find(int a) {
-        if (gates[a] == a) {
-            return a;
+    public static int find(int n) {
+        if (disjoint[n] == n) {
+            return n;
         }
-        return gates[a] = find(gates[a]);
-    }
-
-    public static boolean union(int a) {
-        int foundA = find(a);
-        if (foundA == 0) {
-            return false;
-        }
-        gates[foundA] = foundA - 1;
-        return true;
+        disjoint[n] = find(disjoint[n]);
+        return disjoint[n];
     }
 
 }
