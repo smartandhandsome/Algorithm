@@ -16,7 +16,6 @@ public class Main {
     static int answer = 0;
 
     public static void main(String[] args) throws IOException {
-        // 방문한 곳 다시 방문 하면 +1
         StringTokenizer st = new StringTokenizer(br.readLine());
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
@@ -34,41 +33,27 @@ public class Main {
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < M; j++) {
                 if (visited[i][j] == 0) {
-                    if (check(i, j)) {
-                        answer++;
-                    }
+                    check(i, j);
                 }
             }
         }
-
         System.out.println(answer);
     }
 
-    private static boolean check(int y, int x) {
-        char c = maps[y][x];
-        Direction d = Direction.valueOf(String.valueOf(c));
+    private static void check(int y, int x) {
+        visited[y][x] = 1;
+        Direction d = Direction.valueOf(String.valueOf(maps[y][x]));
 
         int dy = y + d.y;
         int dx = x + d.x;
-
-        if (visited[dy][dx] == 2) { // 이미 방문한 사이클
-            
-            return false;
-        }
-
         if (visited[dy][dx] == 1) {  // 내가 방문하고 있는 곳을 또 방문, 새로운 사이클
-            visited[dy][dx] = 2;
-            return true;
+            answer++;
         }
 
-        if (visited[dy][dx] == 0) {
-            visited[dy][dx] = 1;
-            boolean check = check(dy, dx);
-            visited[dy][dx] = 2;
-            return check;
+        if (visited[dy][dx] == 0) { // 아직 방문 안한 곳 방문
+            check(dy, dx);
         }
-        visited[dy][dx] = 2;
-        return false;
+        visited[y][x] = 2;
     }
 }
 
@@ -83,3 +68,4 @@ enum Direction {
         this.x = x;
     }
 }
+
