@@ -2,13 +2,11 @@ import java.util.Arrays;
 
 public class Solution {
     public int solution(int[] queue1, int[] queue2) {
-
-
         int[] total = new int[queue1.length + queue2.length];
         int n = total.length;
+        
         System.arraycopy(queue1, 0, total, 0, queue1.length);
         System.arraycopy(queue2, 0, total, queue2.length, queue2.length);
-
 
         int index1 = 0;
         int index2 = queue1.length;
@@ -31,16 +29,11 @@ public class Solution {
                 index2 %= n;
             }
             answer++;
-            if (answer >= n * 3) {
+            if (answer >= (n / 2) * 3) {
                 return -1;
             }
         }
 
         return answer;
-    }
-
-    public static void main(String[] args) {
-        Solution solution = new Solution();
-        System.out.println(solution.solution(new int[]{3, 2, 7, 2}, new int[]{4, 6, 5, 1}));
     }
 }
