@@ -8,15 +8,12 @@ public class Solution {
 
     public int[] solution(int n, int[] info) {
         for (int i = 10; i >= 1; i--) {
+            if (n < i) {
+                continue;
+            }
             dfs(10, new ArrayList<>(), i, info, n);
         }
         return answer;
-    }
-
-    public static void main(String[] args) {
-        Solution solution = new Solution();
-
-        System.out.println(Arrays.toString(solution.solution(5, new int[]{2, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0})));
     }
 
     public static void dfs(int idx, List<Integer> lion, int max, int[] info, int n) {
