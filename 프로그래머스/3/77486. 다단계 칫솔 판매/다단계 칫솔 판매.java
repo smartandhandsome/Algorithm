@@ -2,8 +2,6 @@ import java.util.*;
 
 class Solution {
     public int[] solution(String[] enroll, String[] referral, String[] seller, int[] amount) {
-        
-        
         int n = enroll.length;
         
         Map<String, String> parents = new HashMap<>();
@@ -43,19 +41,5 @@ class Solution {
             name = p;
             money = ten;
         }
-    }
-    
-    static class Node {
-        String name;
-        int money;
-        
-        Node(String name, int money) {
-            this.name = name;
-            this.money = money;
-        }
-    }
-    
-    static void print(Object o) {
-        System.out.println(o);
     }
 }
