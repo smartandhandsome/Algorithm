@@ -6,20 +6,30 @@ public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int change = Integer.parseInt(br.readLine());
+        int answer = -1;
 
-        int max = change / 5;
+        if (change < 5) {
+            if (change % 2 == 0) {
+                answer = change / 2;
+            }
+        } else {
+            if (change % 5 == 0) {
+                answer = change / 5;
+            } else {
+                int div = change / 5;
+                int rem = change % 5;
+                if (rem % 2 == 0) {
+                    answer = div + rem / 2;
+                } else {
+                    div--;
+                    rem += 5;
+                    if (rem % 2 == 0) {
+                        answer = div + rem / 2;
+                    }
 
-        for (int i = max; i >= 0; i--) {
-            for (int j = 0; ; j++) {
-                if (i * 5 + j * 2 == change) {
-                    System.out.println(i + j);
-                    System.exit(0);
-                } else if (i * 5 + j * 2 > change) {
-                    break;
                 }
             }
         }
-
-        System.out.println(-1);
+        System.out.println(answer);
     }
 }
