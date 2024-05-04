@@ -1,27 +1,32 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.TreeMap;
+
 
 public class Main {
-    public static void main(String args[]) throws IOException {
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int N = Integer.parseInt(br.readLine());
-        TreeMap<Integer, Integer> map = new TreeMap<>();
-        
+
+        Map<Integer, Integer> map = new TreeMap<>();
         for (int i = 0; i < N; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
-            int start = Integer.parseInt(st.nextToken());
-            int end = Integer.parseInt(st.nextToken());
-            map.put(start, map.getOrDefault(start, 0) + 1);
-            map.put(end, map.getOrDefault(end, 0) - 1);
+            int s = Integer.parseInt(st.nextToken());
+            int e = Integer.parseInt(st.nextToken());
+            map.put(s, map.getOrDefault(s, 0) + 1);
+            map.put(e, map.getOrDefault(e, 0) - 1);
         }
+
         int answer = 0;
-        int cnt = 0;
-        // System.out.println(map);
-        for (Map.Entry<Integer, Integer> en : map.entrySet()) {
-            cnt += en.getValue();
-            answer = Math.max(answer, cnt);
+
+        int room = 0;
+        for (int value : map.values()) {
+            room += value;
+            answer = Math.max(room, answer);
         }
-        
-        System.out.print(answer);
+        System.out.println(answer);
     }
 }
