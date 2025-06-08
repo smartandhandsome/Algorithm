@@ -1,85 +1,86 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 class Solution {
-    int maxi = 0;
+
+    int n;
+
     List<Integer> list = new ArrayList<>();
+    int maxWin = -1;
+    int[][] dice;
 
     public int[] solution(int[][] dice) {
-        List<Integer> a = new ArrayList<>(List.of(0));
+        n = dice.length;
+        this.dice = dice;
+
+        List<Integer> a = new ArrayList<>();
         List<Integer> b = new ArrayList<>();
-        for (int i = 1; i < dice.length; i++) {
+        for(int i = 0; i < n; i++) {
             b.add(i);
         }
-        selectDice(dice, a, b, 1);
-        return list.stream()
-                .mapToInt(value -> value + 1)
-                .sorted()
-                .toArray();
+
+        dfs(a, b, 0);
+
+        return list.stream().sorted().mapToInt(value -> value + 1).toArray();
     }
 
-    void selectDice(int[][] dice, List<Integer> a, List<Integer> b, int index) {
-        if (a.size() == dice.length / 2) {
-            victory(dice, a, b);
+    void dfs(List<Integer> a, List<Integer> b, int index) {
+        if (a.size() == n / 2) {
+            
+            int[] stat = getStat(a, b);
+            if (stat[0] > maxWin) {
+                maxWin = stat[0];
+                list = List.copyOf(a);
+            }
+            if (stat[1] > maxWin) {
+                maxWin = stat[1];
+                list = List.copyOf(b);
+            }
             return;
         }
 
-        for (int i = index; i < dice.length; i++) {
+        for(int i = index; i < n; i++) {
             a.add(i);
             b.remove((Integer) i);
-            selectDice(dice, a, b, i + 1);
-            a.remove((Integer) i);
+            
+            System.out.println("index = " + index);
+            System.out.println("a: " + a + ", b:" + b);
+            
+            dfs(a, b, i + 1);
             b.add(i);
+            a.remove((Integer) i);
         }
     }
 
-    public void victory(int[][] dice, List<Integer> a, List<Integer> b) {
-        Map<Integer, Integer> aScores = new TreeMap();
-        roll(dice, a, 0, 0, aScores);
+    int[] getStat(List<Integer> a, List<Integer> b) {
+        Map<Integer, Integer> aScores = new HashMap<>();
+        Map<Integer, Integer> bScores = new HashMap<>();
+        buildScore(0, a, 0, aScores);
+        buildScore(0, b, 0, bScores);
 
-        Map<Integer, Integer> bScores = new TreeMap();
-        roll(dice, b, 0, 0, bScores);
-
-        int[] result = compare(aScores, bScores);
-        System.out.println("result: " + result[0] + " " + result[1]);
-        if (result[0] > maxi) {
-            maxi = result[0];
-            list = List.copyOf(a);
-        }
-
-        if (result[1] > maxi) {
-            maxi = result[1];
-            list = List.copyOf(b);
-        }
-    }
-
-    public void roll(int[][] dice, List<Integer> selected, int index, int sum, Map<Integer, Integer> scores) {
-        if (index == selected.size()) {
-            scores.put(sum, scores.getOrDefault(sum, 0) + 1);
-            return;
-        }
-
-        int[] sDice = dice[selected.get(index)];
-        for (int diceNum : sDice) {
-            roll(dice, selected, index + 1, sum + diceNum, scores);
-        }
-    }
-
-    public int[] compare(Map<Integer, Integer> a, Map<Integer, Integer> b) {
         int win = 0;
-        int lose = 0;
-        for (Map.Entry<Integer, Integer> aEntry : a.entrySet()) {
-            for (Map.Entry<Integer, Integer> bEntry : b.entrySet()) {
+        int loss = 0;
+        for (Map.Entry<Integer, Integer> aEntry : aScores.entrySet()) {
+            for (Map.Entry<Integer, Integer> bEntry : bScores.entrySet()) {
                 if (aEntry.getKey() > bEntry.getKey()) {
                     win += aEntry.getValue() * bEntry.getValue();
                 } else if (aEntry.getKey() < bEntry.getKey()) {
-                    lose += aEntry.getValue() * bEntry.getValue();
+                    loss += aEntry.getValue() * bEntry.getValue();
                 }
             }
         }
-        return new int[]{win, lose};
+
+        return new int[] {win, loss};
     }
+
+    void buildScore(int sum, List<Integer> selected,  int index, Map<Integer, Integer> map) {
+        if (index == selected.size()) {
+            map.compute(sum, (k, v) -> v == null ? 1 : v + 1);
+            return;
+        }
+        int number = selected.get(index);
+        for (int d : dice[number]) {
+            buildScore(sum + d, selected, index + 1, map);
+        }
+    }
+
 }
