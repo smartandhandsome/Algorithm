@@ -41,13 +41,6 @@ class Solution {
                 break;
             }
             Card[] poll = np1.poll();
-            // System.out.print(poll[0].number + ", ");
-            // System.out.println(poll[1].number);
-            
-            // System.out.print(poll[0].needCoin + ", ");
-            // System.out.println(poll[1].needCoin);
-            // System.out.println("coin: " + coin);
-            
             if (poll[0].needCoin) {
                 if (coin == 0) {
                     break;
