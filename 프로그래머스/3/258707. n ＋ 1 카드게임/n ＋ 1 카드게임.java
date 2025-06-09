@@ -1,54 +1,94 @@
 import java.util.*;
 
 class Solution {
+    
+    Queue<Card[]> np1 = new PriorityQueue<>(Comparator.comparingInt(cards ->
+            (cards[0].needCoin ? 1 : 0) + (cards[1].needCoin ? 1 : 0)));
+    Card[] myCards;
+    
     public int solution(int coin, int[] cards) {
-        // 1 ~ n 사이의 수가 적힌 카드, 동전 coin개
-        // n/3장을 뽑아 가진다. (n은 6의 배수)
-        
-        // 라운드 시작 시 카드 두 장 뽑음, if 카드 뭉치 남은 카드 없다면? 게임 종료
-        // 받은 카드 가지려면 동전 소모 or 버림
-        
-        // 카드 합이 n+1인 카드 두장을 내고 다음라운드 진출 if 낼 카드 2장 없으면? 게임 종료
-        
         int n = cards.length;
-        int[] visited = new int[n + 1];
-        Arrays.fill(visited, -1);
-        Queue<int[]> q = new PriorityQueue<>(Comparator.comparingInt(o -> o[2])); // int[3] {카드번호1, 카드번호2, 가격}
-        for (int i = 0; i < n / 3; i++) {
-            visited[cards[i]] = 0;
-            if (visited[n + 1 - cards[i]] != -1) {
-                q.add(new int[] {cards[i], n + 1 - cards[i], 0});
+        myCards = new Card[n + 1];
+        
+        int index = 0;
+        for (; index < n / 3; index++) {
+            int card = cards[index];
+            myCards[card] = new Card(card, false);
+            
+            if (myCards[n + 1 - card] != null) {
+                np1.add(new Card[] {new Card(card, false),
+                                    new Card(n + 1 - card, false)});
             }
         }
         
-        int index = n / 3;
         int round = 1;
-        while(index <= n - 1) {
-            visited[cards[index]] = 1;
-            if (visited[n + 1 - cards[index]] != -1) {
-                q.add(new int[] {cards[index], n + 1 - cards[index], visited[n + 1 - cards[index]] + 1});
+        while(index < n) {
+            int card1 = cards[index++];
+            myCards[card1] = new Card(card1, true);
+            if (myCards[n + 1 - card1] != null) {
+                np1.add(new Card[] {new Card(card1, true),
+                                    myCards[n + 1 - card1]});
             }
             
-            visited[cards[index + 1]] = 1;
-            if (visited[n + 1 - cards[index + 1]] != -1) {
-                q.add(new int[] {cards[index + 1], n + 1 - cards[index + 1], visited[n + 1 - cards[index + 1]] + 1});
+            int card2 = cards[index++];
+            myCards[card2] = new Card(card2, true);
+            if (myCards[n + 1 - card2] != null) {
+                np1.add(new Card[] {new Card(card2, true),
+                                    myCards[n + 1 - card2]});
             }
-            if (q.size() == 0) {
+            
+            if (np1.isEmpty()) {
                 break;
             }
-            int[] poll = q.poll();
+            Card[] poll = np1.poll();
+            // System.out.print(poll[0].number + ", ");
+            // System.out.println(poll[1].number);
             
+            // System.out.print(poll[0].needCoin + ", ");
+            // System.out.println(poll[1].needCoin);
+            // System.out.println("coin: " + coin);
             
-            if (coin < poll[2]) {
-                break;
-            } else {
-                coin -= poll[2];
+            if (poll[0].needCoin) {
+                if (coin == 0) {
+                    break;
+                }
+                coin--;
             }
             
-            round+=1;
-            index+=2;
+            if (poll[1].needCoin) {
+                if (coin == 0) {
+                    break;
+                }
+                coin--;
+            }
+            
+            round++;
         }
-        
         return round;
     }
+    
+    
+    static class Card {
+        private final int number;
+        private final boolean needCoin;
+        
+        public Card(int number, boolean needCoin) {
+            this.number = number;
+            this.needCoin = needCoin;
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
