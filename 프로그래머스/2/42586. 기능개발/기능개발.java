@@ -30,9 +30,7 @@ class Solution {
             index++;
         }
         
-        if (count > 0) {
-            answer.add(count);
-        }
+        answer.add(count);
         return answer.stream().mapToInt(i -> i).toArray();
     }
 }
